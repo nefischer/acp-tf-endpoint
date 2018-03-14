@@ -87,5 +87,5 @@ resource "aws_route53_record" "dns" {
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
-  records = ["${aws_vpc_endpoint.endpoint.dns_entry[0].dns_name}"]
+  records = ["${lookup(aws_vpc_endpoint.endpoint.dns_entry[0], "dns_name")}"]
 }
