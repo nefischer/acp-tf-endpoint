@@ -63,7 +63,7 @@ resource "aws_vpc_endpoint" "endpoint" {
 
 ## Create a DNS entry for this NLB
 resource "aws_route53_record" "dns" {
-  count = "${dns_zone != "" ? 1 : 0 }"
+  count = "${var.dns_zone != "" ? 1 : 0 }"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
