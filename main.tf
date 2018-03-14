@@ -22,8 +22,10 @@
 
 # Get the host zone id
 data "aws_route53_zone" "selected" {
-  count = "${var.dns_zone != "" ? 1 : 0}"
-  name  = "${var.dns_zone}."
+  count = "${var.dns_zone == "" ? 0 : 1}"
+
+  name         = "${var.dns_zone}"
+  private_zone = "${var.dns_private}"
 }
 
 # Get a list of the subnets to attach to
@@ -36,8 +38,12 @@ data "aws_subnet_ids" "selected" {
 resource "aws_security_group" "filter" {
   description = "The security group for endpoint service: ${var.service_name}"
   name        = "${var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name}"
-  tags        = "${merge(var.security_tags, map("Endpoint", var.service_name))}"
-  vpc_id      = "${var.vpc_id}"
+
+  tags = "${merge(var.security_tags,
+    map("Name", var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name),
+    map("Endpoint", var.service_name))}"
+
+  vpc_id = "${var.vpc_id}"
 }
 
 ## Add the security group rules for the endpoint
@@ -56,7 +62,7 @@ resource "aws_security_group_rule" "ingress" {
 resource "aws_vpc_endpoint" "endpoint" {
   security_group_ids = ["aws_security_group.filter.id"]
   service_name       = "${var.service_name}"
-  subnet_ids         = [ "${data.aws_subnet_ids.selected.ids}" ]
+  subnet_ids         = ["${data.aws_subnet_ids.selected.ids}"]
   vpc_endpoint_type  = "Interface"
   vpc_id             = "${var.vpc_id}"
 }
