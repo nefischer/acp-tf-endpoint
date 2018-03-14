@@ -22,7 +22,7 @@
 
 # Get the host zone id
 data "aws_route53_zone" "selected" {
-  count = "${dns_zone != "" ? 1 : 0}"
+  count = "${var.dns_zone != "" ? 1 : 0}"
   name  = "${var.dns_zone}."
 }
 
@@ -36,7 +36,7 @@ data "aws_subnet_ids" "selected" {
 resource "aws_security_group" "filter" {
   description = "The security group for endpoint service: ${var.service_name}"
   name        = "${var.security_group_name ? format("%s-endpoint", var.name) : var.security_group_name}"
-  tags        = "${merge(var.tags, map("Endpoint", var.service_name))}"
+  tags        = "${merge(var.security_tags, map("Endpoint", var.service_name))}"
   vpc_id      = "${var.vpc_id}"
 }
 
@@ -56,7 +56,7 @@ resource "aws_security_group_rule" "ingress" {
 resource "aws_vpc_endpoint" "endpoint" {
   security_group_ids = ["aws_security_group.filter.id"]
   service_name       = "${var.service_name}"
-  subnet_ids         = "${aws_subnet_ids.selected.ids}"
+  subnet_ids         = "${data.aws_subnet_ids.selected.ids}"
   vpc_endpoint_typ   = "Interface"
   vpc_id             = "${var.vpc_id}"
 }
@@ -69,5 +69,5 @@ resource "aws_route53_record" "dns" {
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
-  records = ["${aws_vpc_endpoint.dns_entry.dns_name}"]
+  records = ["${aws_vpc_endpoint.endpoint.dns_entry.dns_name}"]
 }
