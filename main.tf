@@ -46,11 +46,23 @@ resource "aws_security_group" "filter" {
   vpc_id = "${var.vpc_id}"
 }
 
-## Add the security group rules for the endpoint
+## Add the security group ingress rules
 resource "aws_security_group_rule" "ingress" {
   count = "${length(var.ingress)}"
 
   type              = "ingress"
+  from_port         = "${lookup(var.ingress[count.index], "port")}"
+  to_port           = "${lookup(var.ingress[count.index], "port")}"
+  protocol          = "tcp"
+  cidr_blocks       = ["${lookup(var.ingress[count.index], "cidr")}"]
+  security_group_id = "${aws_security_group.filter.id}"
+}
+
+## Add the security group egress rules
+resource "aws_security_group_rule" "egress" {
+  count = "${length(var.ingress)}"
+
+  type              = "egress"
   from_port         = "${lookup(var.ingress[count.index], "port")}"
   to_port           = "${lookup(var.ingress[count.index], "port")}"
   protocol          = "tcp"

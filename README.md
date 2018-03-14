@@ -24,9 +24,11 @@ Module usage:
 | Name | Description | Default | Required |
 |------|-------------|:-----:|:-----:|
 | dns_name | An optional override for the dns name to use, defaults to var.name | `` | no |
+| dns_private | Indicates the route53 domain is private | `true` | no |
 | dns_ttl | The dns time-to-live for the dns alias record | `300` | no |
 | dns_type | The dns record type we should use for the alias | `CNAME` | no |
 | dns_zone | The domain of a route53 domain you wish to add a cname to | `` | no |
+| egress | An array of map of egress rules for the security group | `<list>` | no |
 | ingress | An array of map of ingress rules for the security group | `<list>` | no |
 | name | A descriptive name for the endpoint you can consuming | - | yes |
 | security_group_name | An optional override to the security group name of the endpoint | `` | no |

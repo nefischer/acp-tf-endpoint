@@ -34,6 +34,17 @@ variable "ingress" {
   ]
 }
 
+variable "egress" {
+  description = "An array of map of egress rules for the security group"
+
+  default = [
+    {
+      cidr = "0.0.0.0/0"
+      port = "-1"
+    },
+  ]
+}
+
 variable "name" {
   description = "A descriptive name for the endpoint you can consuming"
 }
