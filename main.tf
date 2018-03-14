@@ -53,7 +53,7 @@ resource "aws_security_group_rule" "ingress" {
   type              = "ingress"
   from_port         = "${lookup(var.ingress[count.index], "port")}"
   to_port           = "${lookup(var.ingress[count.index], "port")}"
-  to_port           = "${lookup(var.ingress[count.index], "protocol")}"
+  protocol          = "${lookup(var.ingress[count.index], "protocol")}"
   cidr_blocks       = ["${lookup(var.ingress[count.index], "cidr")}"]
   security_group_id = "${aws_security_group.filter.id}"
 }
