@@ -28,8 +28,9 @@ variable "ingress" {
 
   default = [
     {
-      cidr = "0.0.0.0/0"
-      port = "-1"
+      cidr     = "0.0.0.0/0"
+      port     = "-1"
+      protocol = "tcp"
     },
   ]
 }
@@ -39,8 +40,9 @@ variable "egress" {
 
   default = [
     {
-      cidr = "0.0.0.0/0"
-      port = "-1"
+      cidr     = "0.0.0.0/0"
+      port     = "-1"
+      protocol = "-1"
     },
   ]
 }

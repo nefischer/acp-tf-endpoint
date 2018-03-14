@@ -53,20 +53,20 @@ resource "aws_security_group_rule" "ingress" {
   type              = "ingress"
   from_port         = "${lookup(var.ingress[count.index], "port")}"
   to_port           = "${lookup(var.ingress[count.index], "port")}"
-  protocol          = "tcp"
+  to_port           = "${lookup(var.ingress[count.index], "protocol")}"
   cidr_blocks       = ["${lookup(var.ingress[count.index], "cidr")}"]
   security_group_id = "${aws_security_group.filter.id}"
 }
 
 ## Add the security group egress rules
 resource "aws_security_group_rule" "egress" {
-  count = "${length(var.ingress)}"
+  count = "${length(var.egress)}"
 
   type              = "egress"
-  from_port         = "${lookup(var.ingress[count.index], "port")}"
-  to_port           = "${lookup(var.ingress[count.index], "port")}"
-  protocol          = "tcp"
-  cidr_blocks       = ["${lookup(var.ingress[count.index], "cidr")}"]
+  from_port         = "${lookup(var.egress[count.index], "port")}"
+  to_port           = "${lookup(var.egress[count.index], "port")}"
+  protocol          = "${lookup(var.egress[count.index], "protocol")}"
+  cidr_blocks       = ["${lookup(var.egress[count.index], "cidr")}"]
   security_group_id = "${aws_security_group.filter.id}"
 }
 
