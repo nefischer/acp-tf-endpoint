@@ -35,7 +35,7 @@ data "aws_subnet_ids" "selected" {
 ## Create the security group for the endpoint
 resource "aws_security_group" "filter" {
   description = "The security group for endpoint service: ${var.service_name}"
-  name        = "${var.security_group_name ? format("%s-endpoint", var.name) : var.security_group_name}"
+  name        = "${var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name}"
   tags        = "${merge(var.security_tags, map("Endpoint", var.service_name))}"
   vpc_id      = "${var.vpc_id}"
 }
