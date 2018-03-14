@@ -22,8 +22,10 @@
 
 # Get the host zone id
 data "aws_route53_zone" "selected" {
-  count = "${dns_zone != "" ? 1 : 0}"
-  name  = "${var.dns_zone}."
+  count = "${var.dns_zone == "" ? 0 : 1}"
+
+  name         = "${var.dns_zone}"
+  private_zone = "${var.dns_private}"
 }
 
 # Get a list of the subnets to attach to
@@ -35,9 +37,13 @@ data "aws_subnet_ids" "selected" {
 ## Create the security group for the endpoint
 resource "aws_security_group" "filter" {
   description = "The security group for endpoint service: ${var.service_name}"
-  name        = "${var.security_group_name ? format("%s-endpoint", var.name) : var.security_group_name}"
-  tags        = "${merge(var.tags, map("Endpoint", var.service_name))}"
-  vpc_id      = "${var.vpc_id}"
+  name        = "${var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name}"
+
+  tags = "${merge(var.security_tags,
+    map("Name", var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name),
+    map("Endpoint", var.service_name))}"
+
+  vpc_id = "${var.vpc_id}"
 }
 
 ## Add the security group rules for the endpoint
@@ -56,18 +62,18 @@ resource "aws_security_group_rule" "ingress" {
 resource "aws_vpc_endpoint" "endpoint" {
   security_group_ids = ["aws_security_group.filter.id"]
   service_name       = "${var.service_name}"
-  subnet_ids         = "${aws_subnet_ids.selected.ids}"
-  vpc_endpoint_typ   = "Interface"
+  subnet_ids         = ["${data.aws_subnet_ids.selected.ids}"]
+  vpc_endpoint_type  = "Interface"
   vpc_id             = "${var.vpc_id}"
 }
 
 ## Create a DNS entry for this NLB
 resource "aws_route53_record" "dns" {
-  count = "${dns_zone != "" ? 1 : 0 }"
+  count = "${var.dns_zone != "" ? 1 : 0 }"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
-  records = ["${aws_vpc_endpoint.dns_entry.dns_name}"]
+  records = ["${aws_vpc_endpoint.endpoint.dns_entry.dns_name}"]
 }

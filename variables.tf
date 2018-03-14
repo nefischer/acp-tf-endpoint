@@ -8,6 +8,11 @@ variable "dns_ttl" {
   default     = "300"
 }
 
+variable "dns_private" {
+  description = "Indicates the route53 domain is private"
+  default     = true
+}
+
 variable "dns_type" {
   description = "The dns record type we should use for the alias"
   default     = "CNAME"
