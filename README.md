@@ -12,9 +12,7 @@ Module usage:
             "port" = "6001"
          },
        ]
-       subnet_tags     = {
-         "SubnetType" = "public"
-       }
+       subnet_id     = [ "subnet-323829832", "subnet-32382122" ]
      }
 
 
@@ -32,8 +30,7 @@ Module usage:
 | ingress | An array of map of ingress rules for the security group | `<list>` | no |
 | name | A descriptive name for the endpoint you can consuming | - | yes |
 | security_group_name | An optional override to the security group name of the endpoint | `` | no |
-| security_tags | A map of additional tags you can add to the security group tags | `<map>` | no |
 | service_name | The private link endpoint service you wish to consumer | - | yes |
-| subnet_tags | A map of tags to match the subnets we should attach the endpoint | - | yes |
+| subnet_ids | A collection of subnet id which the endpoints should be connected to | - | yes |
 | vpc_id | The VPC id you to adding the endpoint to | - | yes |
 
