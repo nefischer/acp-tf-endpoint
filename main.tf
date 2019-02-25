@@ -13,7 +13,7 @@
  *             "port" = "6001"
  *          },
  *        ]
- *        subnet_id     = [ "subnet-323829832", "subnet-32382122" ]
+ *        subnet_ids     = [ "subnet-323829832", "subnet-32382122" ]
  *      }
  *
  */
@@ -66,7 +66,7 @@ resource "aws_security_group_rule" "egress" {
 resource "aws_vpc_endpoint" "endpoint" {
   security_group_ids = ["${aws_security_group.filter.id}"]
   service_name       = "${var.service_name}"
-  subnet_ids         = ["${var.aws_subnet_ids}"]
+  subnet_ids         = ["${var.subnet_ids}"]
   vpc_endpoint_type  = "Interface"
   vpc_id             = "${var.vpc_id}"
 }
