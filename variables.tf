@@ -41,7 +41,7 @@ variable "egress" {
   default = [
     {
       cidr     = "0.0.0.0/0"
-      port     = "-1"
+      port     = "0"
       protocol = "-1"
     },
   ]
@@ -56,18 +56,18 @@ variable "security_group_name" {
   default     = ""
 }
 
-variable "service_name" {
-  description = "The private link endpoint service you wish to consumer"
-}
-
 variable "security_tags" {
   description = "A map of additional tags you can add to the security group tags"
   default     = {}
 }
 
-variable "subnet_tags" {
-  description = "A map of tags to match the subnets we should attach the endpoint"
-  type        = "map"
+variable "service_name" {
+  description = "The private link endpoint service you wish to consumer"
+}
+
+variable "subnet_ids" {
+  description = "A collection of subnet id which the endpoints should be connected to"
+  type        = "list"
 }
 
 variable "vpc_id" {
