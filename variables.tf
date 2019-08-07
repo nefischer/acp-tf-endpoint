@@ -67,9 +67,10 @@ variable "service_name" {
 
 variable "subnet_ids" {
   description = "A collection of subnet id which the endpoints should be connected to"
-  type        = "list"
+  type        = list(string)
 }
 
 variable "vpc_id" {
   description = "The VPC id you to adding the endpoint to"
 }
+
