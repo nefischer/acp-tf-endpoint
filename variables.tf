@@ -66,10 +66,21 @@ variable "service_name" {
 }
 
 variable "subnet_ids" {
-  description = "A collection of subnet id which the endpoints should be connected to"
+  description = "A collection of subnet id which the endpoints should be connected to (only valid for endpoints of type Interface)"
   type        = "list"
 }
 
 variable "vpc_id" {
   description = "The VPC id you to adding the endpoint to"
+}
+
+variable "vpc_endpoint_type" {
+  description = "The type of endpoint (Interface or Gateway)"
+  default     = "Interface"
+}
+
+variable "route_table_ids" {
+  description = "A collection of route tables routing traffic to the endpoints (only valid for endpoints of type Gateway)"
+  type        = "list"
+  default     = []
 }

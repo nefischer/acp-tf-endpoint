@@ -31,6 +31,7 @@ Module usage:
 | name | A descriptive name for the endpoint you can consuming | - | yes |
 | security_group_name | An optional override to the security group name of the endpoint | `` | no |
 | service_name | The private link endpoint service you wish to consumer | - | yes |
-| subnet_ids | A collection of subnet id which the endpoints should be connected to | - | yes |
+| subnet_ids | A collection of subnet id which the endpoints should be connected to (only valid for endpoints of type Interface) | - | yes |
 | vpc_id | The VPC id you to adding the endpoint to | - | yes |
-
+| vpc_endpoint_type | The type of endpoint (Intefrace or Gateway) | `Interface` | no |
+| route_table_ids | A collection of route tables routing traffic to the endpoints (only valid for endpoints of type Gateway) | `[]` | no |

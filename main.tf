@@ -28,6 +28,7 @@ data "aws_route53_zone" "selected" {
 
 ## Create the security group for the endpoint
 resource "aws_security_group" "filter" {
+  count       = "${var.vpc_endpoint_type == "Interface" ? 1 : 0}"
   description = "The security group for endpoint service: ${var.service_name}"
   name        = "${var.security_group_name == "" ? format("%s-endpoint", var.name) : var.security_group_name}"
 
@@ -40,7 +41,7 @@ resource "aws_security_group" "filter" {
 
 ## Add the security group ingress rules
 resource "aws_security_group_rule" "ingress" {
-  count = "${length(var.ingress)}"
+  count = "${ var.vpc_endpoint_type == "Interface" ? length(var.ingress) : 0}"
 
   type              = "ingress"
   from_port         = "${lookup(var.ingress[count.index], "port")}"
@@ -52,7 +53,7 @@ resource "aws_security_group_rule" "ingress" {
 
 ## Add the security group egress rules
 resource "aws_security_group_rule" "egress" {
-  count = "${length(var.egress)}"
+  count = "${ var.vpc_endpoint_type == "Interface" ? length(var.egress) : 0}"
 
   type              = "egress"
   from_port         = "${lookup(var.egress[count.index], "port")}"
@@ -66,8 +67,9 @@ resource "aws_security_group_rule" "egress" {
 resource "aws_vpc_endpoint" "endpoint" {
   security_group_ids = ["${aws_security_group.filter.id}"]
   service_name       = "${var.service_name}"
-  subnet_ids         = ["${var.subnet_ids}"]
-  vpc_endpoint_type  = "Interface"
+  subnet_ids         = ["${var.vpc_endpoint_type == "Interface" ? var.subnet_ids : "[]"}"]
+  route_table_ids    = ["${var.route_table_ids}"]
+  vpc_endpoint_type  = "${var.vpc_endpoint_type}"
   vpc_id             = "${var.vpc_id}"
 }
 
